@@ -14,7 +14,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag log-example:$(date +%s)
-    - name: Test the Docker image
-      run: docker run --rm log-example:$(date +%s)
+    - name: Build and test the Docker image
+      run: docker build . --file Dockerfile --tag log-example:$(date +%s) && docker run --rm log-example:$(date +%s)
