@@ -7,37 +7,34 @@ use log4rs::{
     encode::json::JsonEncoder,
 };
 
+use crate::ffi::LogLevel;
+
 #[cxx::bridge]
 mod ffi {
+    enum LogLevel {
+        Trace,
+        Debug,
+        Info,
+        Warn,
+        Error,
+    }
+
     #[namespace = "rust_logger"]
     extern "Rust" {
-        fn log_trace(msg: &CxxString);
-        fn log_debug(msg: &CxxString);
-        fn log_info(msg: &CxxString);
-        fn log_warn(msg: &CxxString);
-        fn log_error(msg: &CxxString);
+        fn log(msg: &CxxString, level: LogLevel);
         fn init_logger(filename: &CxxString);
     }
 }
 
-fn log_trace(msg: &CxxString) {
-    trace!("{}", msg);
-}
-
-fn log_debug(msg: &CxxString) {
-    debug!("{}", msg);
-}
-
-fn log_info(msg: &CxxString) {
-    info!("{}", msg);
-}
-
-fn log_warn(msg: &CxxString) {
-    warn!("{}", msg);
-}
-
-fn log_error(msg: &CxxString) {
-    error!("{}", msg);
+fn log(msg: &CxxString, level: LogLevel) {
+    match level {
+        LogLevel::Trace => trace!("{}", msg),
+        LogLevel::Debug => debug!("{}", msg),
+        LogLevel::Info => info!("{}", msg),
+        LogLevel::Warn => warn!("{}", msg),
+        LogLevel::Error => error!("{}", msg),
+        _ => {},
+    };
 }
 
 fn default_logger_config() -> Config {

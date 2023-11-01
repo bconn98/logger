@@ -7,9 +7,9 @@ int main()
     rust_logger::init_logger(lcPath);
 
     std::string lcLog = "This is my special C++ log";
-    rust_logger::log_trace(lcLog);
-    rust_logger::log_debug(lcLog);
-    rust_logger::log_info(lcLog);
-    rust_logger::log_warn(lcLog);
-    rust_logger::log_error(lcLog);
+    rust_logger::log(lcLog, LogLevel::Trace);
+    rust_logger::log(lcLog, LogLevel::Debug);
+    rust_logger::log(lcLog, LogLevel::Info);
+    rust_logger::log(lcLog, LogLevel::Warn);
+    rust_logger::log(lcLog, LogLevel::Error);
 }
