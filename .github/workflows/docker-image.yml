@@ -13,6 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Build and test the Docker image
       run: tag=$(date +%s) && docker build . --file Dockerfile --tag log-example:${tag} && docker run --rm docker.io/library/log-example:${tag}
