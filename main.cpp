@@ -1,15 +1,15 @@
-#include "cxx_bridge/lib.h"
+
 #include <string>
+#include <Logger.hpp>
 
 int main()
 {
     std::string lcPath = "cfg/log4rs.yml";
     rust_logger::init_logger(lcPath);
 
-    std::string lcLog = "This is my special C++ log";
-    rust_logger::log(lcLog, LogLevel::Trace);
-    rust_logger::log(lcLog, LogLevel::Debug);
-    rust_logger::log(lcLog, LogLevel::Info);
-    rust_logger::log(lcLog, LogLevel::Warn);
-    rust_logger::log(lcLog, LogLevel::Error);
+    LOGTRACE("This is my special C++ trace log");
+    LOGDEBUG("This is my special C++ debug log");
+    LOGINFO("This is my special C++ info log");
+    LOGWARN("This is my special C++ warn log");
+    LOGERROR("This is my special C++ error log");
 }

@@ -1,47 +1,66 @@
 use cxx::CxxString;
 
-use log::{trace, debug, info, warn, error, LevelFilter};
+use log::{LevelFilter, logger, Record, Level};
 use log4rs::{
     config::{load_config_file, runtime::Config, Appender, Root},
     append::console::ConsoleAppender,
     encode::json::JsonEncoder,
 };
+use std::path::Path;
 
 use crate::ffi::LogLevel;
 
 #[cxx::bridge]
 mod ffi {
+
     enum LogLevel {
-        Trace,
-        Debug,
-        Info,
-        Warn,
         Error,
+        Warn,
+        Info,
+        Debug,
+        Trace,
     }
 
     #[namespace = "rust_logger"]
     extern "Rust" {
-        fn log(msg: &CxxString, level: LogLevel);
+        fn log(msg: &CxxString, level: LogLevel, file: &CxxString, function: &CxxString, line: u32);
         fn init_logger(filename: &CxxString);
     }
 }
 
-fn log(msg: &CxxString, level: LogLevel) {
-    match level {
-        LogLevel::Trace => trace!("{}", msg),
-        LogLevel::Debug => debug!("{}", msg),
-        LogLevel::Info => info!("{}", msg),
-        LogLevel::Warn => warn!("{}", msg),
-        LogLevel::Error => error!("{}", msg),
-        _ => {},
+
+fn log(msg: &CxxString, level: LogLevel, file: &CxxString, function: &CxxString, line: u32) {
+    let mut builder: log::RecordBuilder<'_> = Record::builder();
+    let file: String = file.to_string();
+    let module_path: String = function.to_string();
+    let target: &str = "";
+
+    let file: &str = Path::new(&file).file_name().unwrap().to_str().unwrap();
+
+    let level: Level = match level {
+        LogLevel::Trace => Level::Trace,
+        LogLevel::Debug => Level::Debug,
+        LogLevel::Info => Level::Info,
+        LogLevel::Warn => Level::Warn,
+        LogLevel::Error => Level::Error,
+        _ => Level::Error,
     };
+
+    logger().log(&builder
+        .args(format_args!("{}", msg))
+        .level(level)
+        .target(target)
+        .module_path(Some(&module_path))
+        .file(Some(file))
+        .line(Some(line))
+        .build());
 }
 
 fn default_logger_config() -> Config {
     let stdout: ConsoleAppender = ConsoleAppender::builder()
         .encoder(Box::new(JsonEncoder::new()))
         .build();
-    let log_config = log4rs::config::Config::builder()
+    let log_config: Config = log4rs::config::Config::builder()
         .appender(Appender::builder().build("stdout", Box::new(stdout)))
         .build(Root::builder().appender("stdout").build(LevelFilter::Error))
         .unwrap();
@@ -51,7 +70,7 @@ fn default_logger_config() -> Config {
 
 fn init_logger(filename: &CxxString) {
     let filename: String = filename.to_string();
-    let log_config = match load_config_file(filename, Default::default()) {
+    let log_config: Config = match load_config_file(filename, Default::default()) {
         Ok(config) => config,
         Err(error) => {
             println!("There was a problem opening the logger config: {:?}. Defaulting to JSON logger.", error);
