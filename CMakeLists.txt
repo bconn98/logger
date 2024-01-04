@@ -31,6 +31,6 @@ corrosion_add_cxxbridge(cxx_bridge CRATE log-layer MANIFEST_PATH log-layer FILES
 
 ####################### Corrosion Linking ############################
 
-add_executable(${PROJECT_NAME} main.cpp)
-target_include_directories(${PROJECT_NAME} PRIVATE "inc")
+add_executable(${PROJECT_NAME} src/main.cpp src/test/mylib.cpp)
+target_include_directories(${PROJECT_NAME} PRIVATE "inc" "inc/test")
 target_link_libraries(${PROJECT_NAME} PRIVATE cxx_bridge)

@@ -1,5 +1,6 @@
 
 #include <string>
+#include <myLib.hpp>
 #include <Logger.hpp>
 
 int main()
@@ -12,4 +13,6 @@ int main()
     LOGINFO("This is my special C++ info log");
     LOGWARN("This is my special C++ warn log");
     LOGERROR("This is my special C++ error log");
+
+    myFunc();
 }

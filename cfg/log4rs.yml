@@ -34,6 +34,6 @@ appenders:
 root:
     level: trace
     appenders:
-        # - development
+        - development
         - production
         - test
