@@ -1,0 +1,9 @@
+{
+  "default-registry": {
+    "kind": "git",
+    "baseline": "f536c969d0f15e3eaa3de5ce06397eb30bc3ba84",
+    "repository": "https://github.com/bconn98/vcpkg"
+  },
+  "registries": [
+  ]
+}

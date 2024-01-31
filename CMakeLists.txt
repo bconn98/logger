@@ -1,19 +1,13 @@
 cmake_minimum_required(VERSION 3.23)
 
-project(log-example CXX)
-
+set(CMAKE_TOOLCHAIN_FILE /usr/local/vcpkg/scripts/buildsystems/vcpkg.cmake)
 set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 set(CMAKE_CXX_STANDARD 20)
 
-####################### Corrosion Linking ############################
-include(FetchContent)
+project(log-example LANGUAGES CXX VERSION 0.0.1)
 
-FetchContent_Declare(
-    Corrosion
-    GIT_REPOSITORY https://github.com/corrosion-rs/corrosion.git
-    GIT_TAG master
-)
-FetchContent_MakeAvailable(Corrosion)
+####################### Corrosion Linking ############################
+find_package(Corrosion CONFIG REQUIRED)
 
 find_program(CXXBRIDGE cxxbridge PATHS "$ENV{HOME}/.cargo/bin/")
 if (CXXBRIDGE STREQUAL "CXXBRIDGE-NOTFOUND")
